@@ -1,0 +1,24 @@
+server:
+  port: 9080
+
+spring:
+  application:
+    name: Tractor Setu
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=Tractor_Setu;encrypt=true;trustServerCertificate=true
+    username: sa
+    password: varad
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    show-sql: true
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+#logging:
+#  level:
+#    org.springframework: DEBUG
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type.descriptor.sql.BasicBinder: TRACE

@@ -24,8 +24,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
-
+public class User
+{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -40,7 +40,7 @@ public class User {
     @Column(name = "PASSWORD")
     private String password;
 
-    @ManyToOne(targetEntity = Role.class )
+    @ManyToOne(targetEntity = Role.class)
     @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")
     private Role role;
 

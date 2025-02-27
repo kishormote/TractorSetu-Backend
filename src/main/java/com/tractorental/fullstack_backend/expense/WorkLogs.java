@@ -1,5 +1,6 @@
 package com.tractorental.fullstack_backend.expense;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -31,11 +32,15 @@ public class WorkLogs
 
     @ManyToOne(targetEntity = Farmers.class)
     @JoinColumn(name = "FARMER_ID", referencedColumnName = "ID")
+    @JsonBackReference
     private Farmers farmer;
 
     @ManyToOne(targetEntity = TractorOwnerTask.class)
     @JoinColumn(name = "TRACTOR_OWNER_TASK_ID", referencedColumnName = "ID")
     private TractorOwnerTask tractorOwnerTask;
+
+    @Column(name = "AREA")
+    private Double area;
 
     @Column(name = "TASK_DATE")
     private LocalDate taskDate;
@@ -43,4 +48,3 @@ public class WorkLogs
     @Column(name = "AMOUNT_PAID")
     private Double amountPaid;
 }
-

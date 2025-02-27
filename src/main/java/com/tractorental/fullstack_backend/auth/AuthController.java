@@ -92,7 +92,7 @@ public class AuthController
                 Collections.singleton(new SimpleGrantedAuthority(user.getRole().getRoleName()))
         );
 
-        String token = jwtUtil.generateToken(userDetails);
+        String token = jwtUtil.generateToken(userDetails, user);
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }
 }

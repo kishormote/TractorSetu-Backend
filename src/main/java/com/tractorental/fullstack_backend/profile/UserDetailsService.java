@@ -36,9 +36,12 @@ public class UserDetailsService
             if (user.getRole().getRoleName().equals("Farmer"))
             {
                 FarmerDetailsDTO farmerDetailsDTO = new FarmerDetailsDTO();
-                farmerDetailsDTO.setLandOwned(user.getUserDetails().getFarmerDetails().getLandOwned());
-                farmerDetailsDTO.setWaterSource(user.getUserDetails().getFarmerDetails().getWaterSource());
-                farmerDetailsDTO.setCropType(user.getUserDetails().getFarmerDetails().getCropType());
+                if(user.getUserDetails().getFarmerDetails() != null)
+                {
+                    farmerDetailsDTO.setLandOwned(user.getUserDetails().getFarmerDetails().getLandOwned());
+                    farmerDetailsDTO.setWaterSource(user.getUserDetails().getFarmerDetails().getWaterSource());
+                    farmerDetailsDTO.setCropType(user.getUserDetails().getFarmerDetails().getCropType());
+                }
 
                 userDetailsDTO.setFarmerDetails(farmerDetailsDTO);
                 userDetailsDTO.setTractorOwnerDetails(null);
@@ -46,10 +49,13 @@ public class UserDetailsService
             else if (user.getRole().getRoleName().equals("Tractor Owner"))
             {
                 TractorOwnerDetailsDTO tractorOwnerDetailsDTO = new TractorOwnerDetailsDTO();
-                tractorOwnerDetailsDTO.setTractorCount(user.getUserDetails().getTractorOwnerDetails().getTractorCount());
-                tractorOwnerDetailsDTO.setAvailabilityStatus(user.getUserDetails().getTractorOwnerDetails().isAvailabilityStatus());
-                tractorOwnerDetailsDTO.setTractorModels(user.getUserDetails().getTractorOwnerDetails().getTractorModels());
-                tractorOwnerDetailsDTO.setRentalPricePerHour(user.getUserDetails().getTractorOwnerDetails().getRentalPricePerHour());
+                if(user.getUserDetails().getTractorOwnerDetails() != null)
+                {
+                    tractorOwnerDetailsDTO.setTractorCount(user.getUserDetails().getTractorOwnerDetails().getTractorCount());
+                    tractorOwnerDetailsDTO.setAvailabilityStatus(user.getUserDetails().getTractorOwnerDetails().isAvailabilityStatus());
+                    tractorOwnerDetailsDTO.setTractorModels(user.getUserDetails().getTractorOwnerDetails().getTractorModels());
+                    tractorOwnerDetailsDTO.setRentalPricePerHour(user.getUserDetails().getTractorOwnerDetails().getRentalPricePerHour());
+                }
 
                 userDetailsDTO.setTractorOwnerDetails(tractorOwnerDetailsDTO);
                 userDetailsDTO.setFarmerDetails(null);
@@ -99,6 +105,7 @@ public class UserDetailsService
             tractorOwnerDetails.setTractorCount(userDetailsDTO.getTractorOwnerDetails().getTractorCount());
             tractorOwnerDetails.setTractorModels(userDetailsDTO.getTractorOwnerDetails().getTractorModels());
             tractorOwnerDetails.setRentalPricePerHour(userDetailsDTO.getTractorOwnerDetails().getRentalPricePerHour());
+            tractorOwnerDetails.setAvailabilityStatus(userDetailsDTO.getTractorOwnerDetails().isAvailabilityStatus());
             updatedUserDetails.setTractorOwnerDetails(tractorOwnerDetails);
         }
 

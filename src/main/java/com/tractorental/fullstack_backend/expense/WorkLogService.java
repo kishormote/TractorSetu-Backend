@@ -20,6 +20,9 @@ public class WorkLogService
     @Autowired
     private TractorOwnerTaskRepository tractorOwnerTaskRepository;
 
+    @Autowired
+    private AmountDueRepository amountDueRepository;
+
     public WorkLogs createWorkLog(WorkLogRequest request)
     {
         Farmers farmer;
@@ -28,7 +31,8 @@ public class WorkLogService
         {
             farmer = farmerRepository.findById(request.getFarmerId())
                     .orElseThrow(() -> new ResourceNotFoundException("Farmer not found for id: " + request.getFarmerId()));
-        } else
+        }
+        else
         {
             if (request.getFarmerName() == null || request.getFarmerName().isEmpty())
             {
@@ -49,9 +53,26 @@ public class WorkLogService
         workLog.setArea(request.getArea());
         workLog.setAmountPaid(request.getAmountPaid());
 
-        return workLogRepository.save(workLog);
-    }
+        WorkLogs savedWorkLog = workLogRepository.save(workLog);
 
+        AmountDue existingAmountDue = amountDueRepository.findByFarmer_IdAndTractorOwner_Id(savedWorkLog.getFarmer().getId(), savedWorkLog.getTractorOwnerTask().getTractorOwner().getId());
+        double workLogNetAmount = (savedWorkLog.getArea() * savedWorkLog.getTractorOwnerTask().getPrice()) - savedWorkLog.getAmountPaid();
+        if (existingAmountDue == null)
+        {
+            AmountDue newAmountDue = new AmountDue();
+            newAmountDue.setFarmer(savedWorkLog.getFarmer());
+            newAmountDue.setTractorOwner(savedWorkLog.getTractorOwnerTask().getTractorOwner());
+            newAmountDue.setAmountDue(workLogNetAmount);
+            amountDueRepository.save(newAmountDue);
+        }
+        else
+        {
+            existingAmountDue.setAmountDue(existingAmountDue.getAmountDue() + workLogNetAmount);
+            amountDueRepository.save(existingAmountDue);
+        }
+
+        return savedWorkLog;
+    }
 
     public WorkLogs updateWorkLog(Long id, WorkLogRequest request)
     {
@@ -90,20 +111,13 @@ public class WorkLogService
 
     public Double getTotalDueAmount(Long farmerId, Long ownerId)
     {
-        List<WorkLogs> workLogs = workLogRepository.findByFarmer_IdAndTractorOwnerTask_TractorOwner_Id(farmerId, ownerId);
-
-        double totalCost = 0.0;
-        double totalPaid = 0.0;
-
-        for (WorkLogs log : workLogs)
+        AmountDue amountDue = amountDueRepository.findByFarmer_IdAndTractorOwner_Id(farmerId, ownerId);
+        if (amountDue == null)
         {
-            double area = log.getArea();
-            double price = log.getTractorOwnerTask().getPrice();
-            totalCost += (area * price);
-            totalPaid += log.getAmountPaid();
+            throw new ResourceNotFoundException("Amount due is not found for farmer id: " + farmerId + "and tractor owner id: " + ownerId);
         }
 
-        return totalCost - totalPaid;
+        return amountDue.getAmountDue();
     }
 
     public List<Farmers> searchFarmers(String name)

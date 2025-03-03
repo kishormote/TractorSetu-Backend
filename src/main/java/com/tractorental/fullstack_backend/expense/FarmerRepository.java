@@ -11,6 +11,14 @@ import java.util.List;
 @Repository
 public interface FarmerRepository extends JpaRepository<Farmers, Long>, JpaSpecificationExecutor<Farmers>
 {
-    @Query("SELECT DISTINCT w.farmer FROM WorkLogs w WHERE w.tractorOwnerTask.tractorOwner.id = :ownerId")
-    List<Farmers> findFarmersByTractorOwner(@Param("ownerId") Long ownerId);
+    @Query(value = "SELECT F.ID AS id, F.NAME AS name, E.AMOUNT_DUE AS amountDue, " +
+                   "(SELECT MAX(L.TASK_DATE) " +
+                   " FROM WORK_LOGS L " +
+                   " JOIN TRACTOR_OWNER_TASKS T ON L.TRACTOR_OWNER_TASK_ID = T.ID " +
+                   " WHERE T.TRACTOR_OWNER_ID = :tractorOwnerId) AS lastWorkDate " +
+                   "FROM FARMERS F " +
+                   "JOIN AMOUNT_DUE E ON F.ID = E.FARMER_ID " +
+                   "WHERE E.TRACTOR_OWNER_ID = :tractorOwnerId",
+            nativeQuery = true)
+    List<FarmersDueResponse> findFarmersByTractorOwner(@Param("tractorOwnerId") Long ownerId);
 }

@@ -44,9 +44,9 @@ public class WorkLogController
     }
 
     @GetMapping("/tractor-owner/{ownerId}")
-    public ResponseEntity<List<Farmers>> getFarmersByTractorOwner(@PathVariable Long ownerId)
+    public ResponseEntity<List<FarmersDueResponse>> getFarmersByTractorOwner(@PathVariable Long ownerId)
     {
-        List<Farmers> farmers = workLogService.getFarmersByTractorOwner(ownerId);
+        List<FarmersDueResponse> farmers = workLogService.getFarmersByTractorOwner(ownerId);
         return ResponseEntity.ok(farmers);
     }
 

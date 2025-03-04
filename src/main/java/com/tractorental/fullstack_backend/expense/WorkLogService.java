@@ -75,7 +75,7 @@ public class WorkLogService
         return workLogRepository.findByFarmer_IdAndTractorOwnerTask_TractorOwner_Id(farmerId, ownerId);
     }
 
-    public List<Farmers> getFarmersByTractorOwner(Long ownerId)
+    public List<FarmersDueResponse> getFarmersByTractorOwner(Long ownerId)
     {
         return farmerRepository.findFarmersByTractorOwner(ownerId);
     }
